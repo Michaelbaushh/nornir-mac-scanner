@@ -228,7 +228,6 @@ def main():
                         results[hostname] = {"error": f"Verbindung fehlgeschlagen: {mac_task_result.exception}"}
                     else:
                         output = mac_task_result.result
-                        console.print(f"[dim]Debug {hostname}: {repr(output[:100])}...[/dim]")  # Debug output
                         mac_entries = parse_mac_table_ios(output)
                         results[hostname] = {"mac_entries": mac_entries, "platform": "ios"}
         
@@ -248,7 +247,6 @@ def main():
                         results[hostname] = {"error": f"Verbindung fehlgeschlagen: {mac_task_result.exception}"}
                     else:
                         output = mac_task_result.result
-                        console.print(f"[dim]Debug {hostname}: {repr(output[:100])}...[/dim]")  # Debug output
                         mac_entries = parse_mac_table_nxos(output)
                         results[hostname] = {"mac_entries": mac_entries, "platform": "nxos"}
         
