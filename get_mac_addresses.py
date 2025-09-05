@@ -227,9 +227,13 @@ def main():
                     if mac_task_result.failed:
                         results[hostname] = {"error": f"Verbindung fehlgeschlagen: {mac_task_result.exception}"}
                     else:
-                        output = mac_task_result.result
-                        mac_entries = parse_mac_table_ios(output)
-                        results[hostname] = {"mac_entries": mac_entries, "platform": "ios"}
+                        netmiko_multi_result = mac_task_result.result  # MultiResult von netmiko_send_command
+                        if len(netmiko_multi_result) > 0:
+                            output = netmiko_multi_result[0].result  # Der tatsächliche String
+                            mac_entries = parse_mac_table_ios(output)
+                            results[hostname] = {"mac_entries": mac_entries, "platform": "ios"}
+                        else:
+                            results[hostname] = {"error": "Keine Ausgabe vom Gerät erhalten"}
         
         # NX-OS Switches verarbeiten  
         nxos_hosts = nr.filter(lambda host: 'nxos_switches' in host.groups)
@@ -246,9 +250,13 @@ def main():
                     if mac_task_result.failed:
                         results[hostname] = {"error": f"Verbindung fehlgeschlagen: {mac_task_result.exception}"}
                     else:
-                        output = mac_task_result.result
-                        mac_entries = parse_mac_table_nxos(output)
-                        results[hostname] = {"mac_entries": mac_entries, "platform": "nxos"}
+                        netmiko_multi_result = mac_task_result.result  # MultiResult von netmiko_send_command
+                        if len(netmiko_multi_result) > 0:
+                            output = netmiko_multi_result[0].result  # Der tatsächliche String
+                            mac_entries = parse_mac_table_nxos(output)
+                            results[hostname] = {"mac_entries": mac_entries, "platform": "nxos"}
+                        else:
+                            results[hostname] = {"error": "Keine Ausgabe vom Gerät erhalten"}
         
         # Ergebnisse anzeigen
         console.print("\n[bold yellow]📊 ERGEBNISSE[/bold yellow]")
