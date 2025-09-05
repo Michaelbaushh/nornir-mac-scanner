@@ -1,0 +1,15 @@
+---
+s1:
+  hostname: "192.168.2.231"
+  platform: "cisco_ios"
+  groups: ["ios_switches"]
+
+s2:
+  hostname: "192.168.2.232"  
+  platform: "cisco_ios"
+  groups: ["ios_switches"]
+
+s3:
+  hostname: "192.168.2.233"
+  platform: "cisco_nxos"
+  groups: ["nxos_switches"]

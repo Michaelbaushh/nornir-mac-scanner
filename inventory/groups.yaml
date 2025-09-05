@@ -1,0 +1,6 @@
+---
+ios_switches:
+  platform: "cisco_ios"
+
+nxos_switches: 
+  platform: "cisco_nxos"
