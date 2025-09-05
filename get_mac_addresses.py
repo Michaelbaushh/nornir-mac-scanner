@@ -89,22 +89,23 @@ def parse_mac_table_ios(output):
 def parse_mac_table_nxos(output):
     """
     Parst die MAC Address Table Ausgabe von NX-OS Geräten
+    Format: *    1     000c.2937.a1ae   dynamic  NA         F      F    Eth1/1
     """
     mac_entries = []
     lines = output.split('\n')
     
     for line in lines:
         line = line.strip()
-        # NX-OS Format kann leicht anders sein
-        if line and not line.startswith('VLAN') and not line.startswith('----') and '*' not in line:
+        # NX-OS Format: * VLAN MAC Type Age Secure NTFY Port
+        if line.startswith('*') and 'dynamic' in line.lower():
             parts = line.split()
-            if len(parts) >= 4:
+            if len(parts) >= 8:  # Mindestens 8 Teile erwartet
                 try:
-                    vlan = parts[0]
-                    mac = parts[1]
-                    mac_type = parts[2] 
-                    age = parts[3] if len(parts) > 4 else ''
-                    port = parts[-1]  # Letzter Teil ist normalerweise der Port
+                    # parts[0] = '*', parts[1] = VLAN, parts[2] = MAC, parts[3] = type, parts[7] = port
+                    vlan = parts[1]
+                    mac = parts[2]
+                    mac_type = parts[3]
+                    port = parts[7]  # Letzter Teil ist der Port
                     
                     # Nur dynamische MAC-Adressen
                     if 'dynamic' in mac_type.lower():
