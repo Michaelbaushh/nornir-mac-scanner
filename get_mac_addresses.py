@@ -197,13 +197,13 @@ def main():
     try:
         # Nornir initialisieren
         nr = InitNornir(config_file="config.yaml")
-        console.print(f"[green]✅ {len(nr.inventory.hosts)} Geräte in der Inventarliste geladen[/green]")
+        console.print(f"[green]✅ {len(nr.inventory.hosts)} Switches in der Inventarliste geladen[/green]")
         
         # Ergebnis-Dictionary initialisieren  
         results = {}
         
-        # Alle Geräte mit Hybrid-Methode verarbeiten
-        console.print(f"[cyan]🔄 Verarbeite {len(nr.inventory.hosts)} Gerät(e) hybrid...[/cyan]")
+        # Alle Switches mit Hybrid-Methode verarbeiten
+        console.print(f"[cyan]🔄 Verarbeite {len(nr.inventory.hosts)} Switch(es) hybrid...[/cyan]")
         hybrid_results = nr.run(task=get_mac_addresses_hybrid)
         
         for hostname, task_result in hybrid_results.items():
@@ -261,7 +261,7 @@ def main():
         failed_devices = len(results) - successful_devices
         
         console.print(f"\n[bold green]📈 ZUSAMMENFASSUNG[/bold green]")
-        console.print(f"[green]✅ Erfolgreich verbundene Geräte: {successful_devices}[/green]")
+        console.print(f"[green]✅ Erfolgreich verbundene Switches: {successful_devices}[/green]")
         console.print(f"[red]❌ Fehlgeschlagene Verbindungen: {failed_devices}[/red]")
         console.print(f"[blue]📋 Gesamt MAC-Adressen gefunden: {total_macs}[/blue]")
         console.print(f"[magenta]🔧 Methode: Hybrid (NAPALM + Netmiko)[/magenta]")

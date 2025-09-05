@@ -1,6 +1,6 @@
 # Nornir MAC Address Scanner
 
-Ein modernisierter Python-basierter MAC-Adressen Scanner für Cisco-Netzwerkgeräte using Nornir, NAPALM und Netmiko.
+Ein modernisierter Python-basierter MAC-Adressen Scanner für Cisco-Switches using Nornir, NAPALM und Netmiko.
 
 ## 🚀 Features
 
@@ -21,7 +21,7 @@ Ein modernisierter Python-basierter MAC-Adressen Scanner für Cisco-Netzwerkger�
 ## 📋 Voraussetzungen
 
 - Python 3.7+
-- SSH-Zugang zu Cisco-Geräten
+- SSH-Zugang zu Cisco-Switches
 - Netzwerk-Konnektivität zu den Switches
 
 ## �️ Installation
@@ -39,7 +39,7 @@ Ein modernisierter Python-basierter MAC-Adressen Scanner für Cisco-Netzwerkger�
 
 3. **Inventar konfigurieren:**
    Bearbeite die Dateien im `inventory/` Verzeichnis:
-   - `hosts.yaml` - Geräte-IP-Adressen und Plattformen
+   - `hosts.yaml` - Switch-IP-Adressen und Plattformen
    - `groups.yaml` - Platform-Gruppen und Connection-Optionen
    - `defaults.yaml` - Standard-Credentials
 
@@ -59,8 +59,8 @@ python3 get_mac_addresses.py
 ```
 🚀 Hybrid MAC-Adressen Scanner
 🔧 NAPALM für IOS, Netmiko für NX-OS
-✅ 3 Geräte in der Inventarliste geladen
-🔄 Verarbeite 3 Gerät(e) hybrid...
+✅ 3 Switches in der Inventarliste geladen
+🔄 Verarbeite 3 Switch(es) hybrid...
 
 📊 ERGEBNISSE
 
@@ -75,7 +75,7 @@ python3 get_mac_addresses.py
 Gesamt: 24 MAC-Adressen gefunden - NAPALM (JSON)
 
 📈 ZUSAMMENFASSUNG
-✅ Erfolgreich verbundene Geräte: 3
+✅ Erfolgreich verbundene Switches: 3
 📋 Gesamt MAC-Adressen gefunden: 73
 🔧 Methode: Hybrid (NAPALM + Netmiko)
 ```
@@ -88,8 +88,8 @@ nornir-mac-scanner/
 ├── test_connectivity.py     # Verbindungstest-Utility
 ├── config.yaml             # Nornir-Konfiguration
 ├── requirements.txt        # Python Dependencies
-├── inventory/              # Geräte-Inventar
-│   ├── hosts.yaml         #   - Geräte-Definitionen
+├── inventory/              # Switch-Inventar
+│   ├── hosts.yaml         #   - Switch-Definitionen
 │   ├── groups.yaml        #   - Platform-Gruppen
 │   └── defaults.yaml      #   - Standard-Einstellungen
 └── versions/              # Legacy-Versionen
@@ -145,8 +145,8 @@ password: cisco
 
 ### Warum Hybrid-Ansatz?
 
-- **IOS-Geräte**: Nutzen NAPALM für strukturierte JSON-APIs
-- **NX-OS-Geräte**: Verwenden Netmiko da NXAPI oft nicht aktiviert ist
+- **IOS-Switches**: Nutzen NAPALM für strukturierte JSON-APIs
+- **NX-OS-Switches**: Verwenden Netmiko da NXAPI oft nicht aktiviert ist
 - **Automatische Platform-Erkennung**: Script wählt optimale Methode
 
 ### NAPALM vs Netmiko
@@ -160,7 +160,7 @@ password: cisco
 
 ## �📊 Ausgabe
 
-Das Script zeigt für jedes Gerät eine Tabelle mit:
+Das Script zeigt für jeden Switch eine Tabelle mit:
 - **VLAN**: VLAN-Nummer
 - **MAC-Adresse**: Hardware-Adresse  
 - **Typ**: Adresstyp (Dynamic/Static)
@@ -177,15 +177,15 @@ get-macs/
 ├── get_mac_addresses.py     # Haupt-Scanner Script
 ├── test_connectivity.py     # Konnektivitätstest
 ├── inventory/
-│   ├── hosts.yaml          # Geräte-Inventar
-│   ├── groups.yaml         # Geräte-Gruppen
+│   ├── hosts.yaml          # Switch-Inventar
+│   ├── groups.yaml         # Switch-Gruppen
 │   └── defaults.yaml       # Standard-Anmeldedaten
 └── README.md               # Diese Datei
 ```
 
 ## 🔍 Unterstützte Plattformen
 
-- **Cisco IOS** - Switches und Router
+- **Cisco IOS** - Catalyst und andere Layer-2/3 Switches
 - **Cisco NX-OS** - Nexus Switches
 
 ## ⚠️ Troubleshooting
@@ -201,7 +201,7 @@ get-macs/
    - Teste manuelle SSH-Verbindung
 
 3. **Leere MAC-Tabelle:**
-   - Überprüfe ob Geräte aktiv im Netzwerk sind
+   - Überprüfe ob Switches aktiv im Netzwerk sind
    - Teste manuell: `show mac address-table`
 
 ### Debug-Modus aktivieren:
@@ -216,11 +216,11 @@ logging:
 
 ## 📝 Anpassungen
 
-Das Script kann einfach für andere Netzwerkgeräte erweitert werden:
+Das Script kann einfach für andere Switch-Plattformen erweitert werden:
 
 1. Neue Plattform in `groups.yaml` hinzufügen
 2. Entsprechende Parse-Funktion implementieren
-3. Gerätespezifische Show-Befehle anpassen
+3. Switch-spezifische Show-Befehle anpassen
 
 ## 🤝 Beitrag
 

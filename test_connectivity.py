@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-Hilfsskript zum Testen der Konnektivität zu den Netzwerkgeräten
+Hilfsskript zum Testen der Konnektivität zu den Switches
 vor dem Ausführen des MAC-Address Scanners
 """
 
@@ -14,7 +14,7 @@ from nornir_netmiko.tasks import netmiko_send_command
 
 def test_connectivity(task):
     """
-    Testet die grundlegende Konnektivität zu einem Gerät
+    Testet die grundlegende Konnektivität zu einem Switch
     """
     try:
         # Einfachen Show-Befehl ausführen
@@ -49,7 +49,7 @@ def main():
     
     try:
         nr = InitNornir(config_file="config.yaml")
-        console.print(f"[green]📋 Teste Verbindung zu {len(nr.inventory.hosts)} Geräte(n)...[/green]")
+        console.print(f"[green]📋 Teste Verbindung zu {len(nr.inventory.hosts)} Switch(es)...[/green]")
         
         # Konnektivitätstest ausführen
         results = nr.run(task=test_connectivity)
@@ -78,12 +78,12 @@ def main():
             )
         
         console.print(table)
-        console.print(f"\n[bold green]📊 Zusammenfassung: {success_count}/{len(nr.inventory.hosts)} Geräte erreichbar[/bold green]")
+        console.print(f"\n[bold green]📊 Zusammenfassung: {success_count}/{len(nr.inventory.hosts)} Switches erreichbar[/bold green]")
         
         if success_count == len(nr.inventory.hosts):
-            console.print("[bold green]🎉 Alle Geräte sind erreichbar! Du kannst den MAC-Scanner ausführen.[/bold green]")
+            console.print("[bold green]🎉 Alle Switches sind erreichbar! Du kannst den MAC-Scanner ausführen.[/bold green]")
         else:
-            console.print("[bold yellow]⚠️  Einige Geräte sind nicht erreichbar. Überprüfe die Konfiguration.[/bold yellow]")
+            console.print("[bold yellow]⚠️  Einige Switches sind nicht erreichbar. Überprüfe die Konfiguration.[/bold yellow]")
             
     except Exception as e:
         console.print(f"[bold red]💥 Fehler: {str(e)}[/bold red]")
