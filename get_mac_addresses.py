@@ -8,6 +8,8 @@ Datum: September 2025
 """
 
 import sys
+import csv
+from datetime import datetime
 from pathlib import Path
 from rich.console import Console
 from rich.table import Table
@@ -118,6 +120,43 @@ def parse_mac_table_nxos(output):
     return mac_entries
 
 
+def export_to_csv(results, console):
+    """
+    Exportiert die MAC-Adressen Ergebnisse in eine CSV-Datei
+    """
+    timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
+    csv_filename = f"mac_addresses_{timestamp}.csv"
+    
+    try:
+        with open(csv_filename, 'w', newline='', encoding='utf-8') as csvfile:
+            fieldnames = ['hostname', 'ip_address', 'platform', 'vlan', 'mac_address', 'type', 'port']
+            writer = csv.DictWriter(csvfile, fieldnames=fieldnames)
+            
+            # Header schreiben
+            writer.writeheader()
+            
+            # Daten schreiben
+            for hostname, result in results.items():
+                if 'mac_entries' in result:
+                    for entry in result['mac_entries']:
+                        writer.writerow({
+                            'hostname': hostname,
+                            'ip_address': '',  # Wird später gefüllt
+                            'platform': result.get('platform', ''),
+                            'vlan': entry['vlan'],
+                            'mac_address': entry['mac'],
+                            'type': entry['type'], 
+                            'port': entry['port']
+                        })
+        
+        console.print(f"[bold green]📁 CSV-Export erfolgreich: {csv_filename}[/bold green]")
+        return csv_filename
+        
+    except Exception as e:
+        console.print(f"[bold red]❌ CSV-Export fehlgeschlagen: {str(e)}[/bold red]")
+        return None
+
+
 def display_results(results, console):
     """
     Zeigt die Ergebnisse in einer formattierten Tabelle an
@@ -183,7 +222,7 @@ def main():
                 if task_result[0].failed:
                     results[hostname] = {"error": f"Verbindung fehlgeschlagen: {task_result[0].exception}"}
                 else:
-                    output = task_result[0].result
+                    output = str(task_result[0].result)
                     mac_entries = parse_mac_table_ios(output)
                     results[hostname] = {"mac_entries": mac_entries, "platform": "ios"}
         
@@ -197,13 +236,16 @@ def main():
                 if task_result[0].failed:
                     results[hostname] = {"error": f"Verbindung fehlgeschlagen: {task_result[0].exception}"}
                 else:
-                    output = task_result[0].result  
+                    output = str(task_result[0].result)
                     mac_entries = parse_mac_table_nxos(output)
                     results[hostname] = {"mac_entries": mac_entries, "platform": "nxos"}
         
         # Ergebnisse anzeigen
         console.print("\n[bold yellow]📊 ERGEBNISSE[/bold yellow]")
         display_results(results, console)
+        
+        # CSV Export
+        csv_file = export_to_csv(results, console)
         
         # Zusammenfassung
         total_macs = sum(len(result.get('mac_entries', [])) for result in results.values())
@@ -214,6 +256,10 @@ def main():
         console.print(f"[green]✅ Erfolgreich verbundene Geräte: {successful_devices}[/green]")
         console.print(f"[red]❌ Fehlgeschlagene Verbindungen: {failed_devices}[/red]")
         console.print(f"[blue]📋 Gesamt MAC-Adressen gefunden: {total_macs}[/blue]")
+        
+        if csv_file:
+            current_dir = Path().absolute()
+            console.print(f"[cyan]💾 CSV-Datei gespeichert unter: {current_dir}/{csv_file}[/cyan]")
         
     except Exception as e:
         console.print(f"[bold red]💥 Kritischer Fehler: {str(e)}[/bold red]")
