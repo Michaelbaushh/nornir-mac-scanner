@@ -219,12 +219,18 @@ def main():
             ios_results = ios_hosts.run(task=get_mac_addresses_ios)
             
             for hostname, task_result in ios_results.items():
-                if task_result[0].failed:
-                    results[hostname] = {"error": f"Verbindung fehlgeschlagen: {task_result[0].exception}"}
+                if task_result.failed:
+                    results[hostname] = {"error": f"Task fehlgeschlagen: {task_result.exception}"}
                 else:
-                    output = str(task_result[0].result)
-                    mac_entries = parse_mac_table_ios(output)
-                    results[hostname] = {"mac_entries": mac_entries, "platform": "ios"}
+                    # Zugriff auf das netmiko_send_command Result
+                    mac_task_result = task_result[0]  # Das netmiko_send_command Result
+                    if mac_task_result.failed:
+                        results[hostname] = {"error": f"Verbindung fehlgeschlagen: {mac_task_result.exception}"}
+                    else:
+                        output = mac_task_result.result
+                        console.print(f"[dim]Debug {hostname}: {repr(output[:100])}...[/dim]")  # Debug output
+                        mac_entries = parse_mac_table_ios(output)
+                        results[hostname] = {"mac_entries": mac_entries, "platform": "ios"}
         
         # NX-OS Switches verarbeiten  
         nxos_hosts = nr.filter(lambda host: 'nxos_switches' in host.groups)
@@ -233,12 +239,18 @@ def main():
             nxos_results = nxos_hosts.run(task=get_mac_addresses_nxos)
             
             for hostname, task_result in nxos_results.items():
-                if task_result[0].failed:
-                    results[hostname] = {"error": f"Verbindung fehlgeschlagen: {task_result[0].exception}"}
+                if task_result.failed:
+                    results[hostname] = {"error": f"Task fehlgeschlagen: {task_result.exception}"}
                 else:
-                    output = str(task_result[0].result)
-                    mac_entries = parse_mac_table_nxos(output)
-                    results[hostname] = {"mac_entries": mac_entries, "platform": "nxos"}
+                    # Zugriff auf das netmiko_send_command Result
+                    mac_task_result = task_result[0]  # Das netmiko_send_command Result
+                    if mac_task_result.failed:
+                        results[hostname] = {"error": f"Verbindung fehlgeschlagen: {mac_task_result.exception}"}
+                    else:
+                        output = mac_task_result.result
+                        console.print(f"[dim]Debug {hostname}: {repr(output[:100])}...[/dim]")  # Debug output
+                        mac_entries = parse_mac_table_nxos(output)
+                        results[hostname] = {"mac_entries": mac_entries, "platform": "nxos"}
         
         # Ergebnisse anzeigen
         console.print("\n[bold yellow]📊 ERGEBNISSE[/bold yellow]")
