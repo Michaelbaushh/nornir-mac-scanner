@@ -1,6 +1,12 @@
 ---
 ios_switches:
   platform: "cisco_ios"
-
+  connection_options:
+    napalm:
+      platform: "ios"
+      
 nxos_switches: 
   platform: "cisco_nxos"
+  connection_options:
+    napalm:
+      platform: "nxos"
